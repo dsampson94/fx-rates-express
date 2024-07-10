@@ -19,8 +19,13 @@ app.use(cors({
         'http://197.90.38.64:4200',
         'https://197.90.38.64:4200',
         'https://fx-rates.vercel.app'
-    ]
+    ],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
+
 app.use(express.json());
 app.use(express.static(join(__dirname, '../public')));
 
