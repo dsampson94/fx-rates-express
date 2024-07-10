@@ -15,11 +15,7 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 app.use(cors({
-    origin: [
-        'http://197.90.38.64:4200',
-        'https://197.90.38.64:4200',
-        'https://fx-rates.vercel.app'
-    ],
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
     optionsSuccessStatus: 204,
@@ -36,9 +32,9 @@ app.get('/', (_req: Request, res: Response) => res.send('FX Rates Express Server
  */
 const fetchAndStoreFxRates = async () => {
     try {
-        const { data } = await axios.get('https://fcsapi.com/api-v3/forex/latest?id=1&access_key=K9izZeK9cwB2rKS86EalHszK');
+        const {data} = await axios.get('https://fcsapi.com/api-v3/forex/latest?id=1&access_key=K9izZeK9cwB2rKS86EalHszK');
         const rates = data.response;
-
+        console.log(rates);
         const ratePromises = rates.map((rate: any) => {
             const timestamp = parseInt(rate.t, 10);
             const rateDate = new Date(timestamp * 1000);
@@ -48,9 +44,9 @@ const fetchAndStoreFxRates = async () => {
             }
 
             return FxRate.updateOne(
-                { base: rate.s.split('/')[0], counter: rate.s.split('/')[1] },
-                { rate: parseFloat(rate.c), date: rateDate },
-                { upsert: true }
+                {base: rate.s.split('/')[0], counter: rate.s.split('/')[1]},
+                {rate: parseFloat(rate.c), date: rateDate},
+                {upsert: true}
             );
         });
 
@@ -71,21 +67,21 @@ cron.schedule('0 * * * *', fetchAndStoreFxRates);
  * Get latest rate for a base and counter currency
  */
 app.get('/fxrate', async (req: Request, res: Response) => {
-    const { base, counter } = req.query;
+    const {base, counter} = req.query;
     if (!base || !counter) {
-        return res.status(400).json({ error: 'Base and counter currencies are required.' });
+        return res.status(400).json({error: 'Base and counter currencies are required.'});
     }
 
     try {
-        const rate = await FxRate.findOne({ base, counter }).sort({ date: -1 });
+        const rate = await FxRate.findOne({base, counter}).sort({date: -1});
         if (!rate) {
-            return res.status(404).json({ error: 'FX rate not found.' });
+            return res.status(404).json({error: 'FX rate not found.'});
         }
 
         res.json(rate);
     } catch (error) {
         console.error('Error fetching FX rate:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({error: 'Internal server error'});
     }
 });
 
