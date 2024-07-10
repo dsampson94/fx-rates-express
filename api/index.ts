@@ -15,11 +15,7 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 app.use(cors({
-    origin: [
-        'http://197.90.38.64:4200',
-        'https://197.90.38.64:4200',
-        'https://fx-rates.vercel.app'
-    ],
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
 }));
