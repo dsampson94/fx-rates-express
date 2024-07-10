@@ -22,8 +22,6 @@ app.use(cors({
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
-    optionsSuccessStatus: 204,
-    preflightContinue: false
 }));
 
 app.use(express.json());
