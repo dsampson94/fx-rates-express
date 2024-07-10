@@ -15,7 +15,11 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 app.use(cors({
-    origin: '*',
+    origin: [
+        'http://197.90.38.64:4200',
+        'https://197.90.38.64:4200',
+        'https://fx-rates.vercel.app'
+    ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
     optionsSuccessStatus: 204,
@@ -73,7 +77,7 @@ app.get('/fxrate', async (req: Request, res: Response) => {
     }
 
     try {
-        const rate = await FxRate.findOne({base, counter}).sort({date: -1});
+        const rate = await FxRate.findOne({base, counter}).sort({date: -1}).maxTimeMS(30000);
         if (!rate) {
             return res.status(404).json({error: 'FX rate not found.'});
         }
