@@ -77,7 +77,7 @@ app.get('/fxrate', async (req: Request, res: Response) => {
     }
 
     try {
-        const rate = await FxRate.findOne({base, counter}).sort({date: -1}).maxTimeMS(30000);
+        const rate = await FxRate.findOne({base, counter}).maxTimeMS(30000);
         if (!rate) {
             return res.status(404).json({error: 'FX rate not found.'});
         }
