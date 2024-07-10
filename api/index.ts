@@ -14,7 +14,9 @@ const port = process.env.PORT || 3000;
 
 connectDB();
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://197.90.38.64', 'https://fx-rates.vercel.app']
+}));
 app.use(express.json());
 app.use(express.static(join(__dirname, '../public')));
 
